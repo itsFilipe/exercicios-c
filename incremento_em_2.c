@@ -12,5 +12,4 @@ int main()
     printf("%i", soma);
 
     return 0;
-
 }
