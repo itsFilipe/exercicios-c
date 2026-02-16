@@ -1,129 +1,128 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-struct Fila {
-	int capacidade;
-	float *dados;
-	int primeiro;
-	int ultimo;
-	int nItens; 
+struct fila
+{
+    int capacidade;
+    int *dados;
+    int primeiro;
+    int ultimo;
+    int nItens;
 };
 
-void criarFila( struct Fila *f, int c ) { 
-	f->capacidade = c;
-	f->dados = (float*) malloc (f->capacidade * sizeof(float));
-	f->primeiro = 0;
-	f->ultimo = -1;
-	f->nItens = 0; 
+//FIFO: First In, First Out 
+
+void criarFila(struct fila *f, int cap);
+void enfileirar(struct fila *f, int num);
+void desenfileirar(struct fila *f);
+void mostrarFila(struct fila *f);
+
+int main(){
+	int op;
+	struct fila minhaFila;
+
+	printf("Digite a capacidade da fila: ");
+	scanf("%d", &minhaFila.capacidade);
+	criarFila(&minhaFila, minhaFila.capacidade);
+
+	printf("Fila criada com capacidade de %d\n", minhaFila.capacidade);
+
+	while(op != 4)
+	{
+		printf("1 - Enfileirar\n");
+		printf("2 - Desenfileirar\n");
+		printf("3 - Mostrar fila\n");
+		printf("4 - Sair\n");
+		printf("Digite a opcao desejada: ");
+		scanf("%d", &op);
+		switch (op)
+		{
+		case 1: //enfileirar
+			printf("Digite um numero para enfileirar: ");
+			int num;
+			scanf("%d", &num);
+			enfileirar(&minhaFila, num);
+			break;
+
+		case 2: //desenfileirar
+			printf("Desenfileirando...\n");
+			desenfileirar(&minhaFila);
+			break;
+
+		case 3: //mostrar fila
+			mostrarFila(&minhaFila);
+			break;
+		
+		case 4: //sair	
+			printf("Saindo...\n");
+			break;
+		
+		default:
+			printf("Opcao invalida\n");
+			break;
+		}
+	}
+
+	free(minhaFila.dados);
+	printf("Memoria liberada para a fila foi liberada\n");
+
+    return 0;
 }
 
-void inserir(struct Fila *f, int v) {
-	if(f->ultimo == f->capacidade-1)
-		f->ultimo = -1;
+void criarFila(struct fila *f, int cap){
+    f->capacidade = cap;
+    f->dados = (int*) malloc (f->capacidade * sizeof(int));
+    f->primeiro = 0;
+    f->ultimo = -1;
+    f->nItens = 0;
 
-	f->ultimo++;
-	f->dados[f->ultimo] = v; // incrementa ultimo e insere
-	f->nItens++; // mais um item inserido
+    printf("Fila iniciada\n");
 }
 
-int remover( struct Fila *f ) { // pega o item do começo da fila
-	int temp = f->dados[f->primeiro++]; // pega o valor e incrementa o primeiro
+void enfileirar(struct fila *f, int num){
+    if(f->capacidade == f->nItens)
+    {
+        printf("Fila esta cheia\n");
+        return;
+    }
+        
+    //f->ultimo++;
+    f->ultimo = (f->ultimo + 1) % f->capacidade;
 
-	if(f->primeiro == f->capacidade)
-		f->primeiro = 0;
+    f->dados[f->ultimo] = num;
 
-	f->nItens--;  // um item retirado
-	return temp;
+    f->nItens++;
+    
+    printf("Numero %d foi inserido no final da fila, indice %d\n", num, f->ultimo);
 }
 
-int estaVazia( struct Fila *f ) { // retorna verdadeiro se a fila estao vazia
-	return (f->nItens==0);
+void desenfileirar(struct fila *f){
+    if(f->nItens == 0)
+    {
+        printf("Fila esta vazia\n");
+        return;
+    }
+
+    int numAux = f->dados[f->primeiro];
+    f->dados[f->primeiro] = 0;
+    //f->primeiro++;
+    f->primeiro = (f->primeiro + 1) % f->capacidade;
+
+    f->nItens--;
+
+    printf("Numero %d saiu da fila, indice se tornou %d\n", numAux, f->primeiro);
 }
 
-int estaCheia( struct Fila *f ) { // retorna verdadeiro se a fila estao cheia
-	return (f->nItens == f->capacidade);
-}
-
-void mostrarFila(struct Fila *f){
+void mostrarFila(struct fila *f){
 	int cont, i;
 
-	for ( cont=0, i= f->primeiro; cont < f->nItens; cont++){
+	printf("\nFila: ");
 
-		printf("%.2f\t",f->dados[i++]);
+	for ( cont=0, i = f->primeiro; cont < f->nItens; cont++){
+		printf("%d ",f->dados[i++]);
 
 		if (i == f->capacidade)
 			i=0;
-
 	}
 	printf("\n\n");
-}
-
-void main () {
-	int opcao, capa;
-	float valor;
-	struct Fila umaFila;
-
-	// cria a fila
-	printf("\nCapacidade da fila? ");
-	scanf("%d",&capa);
-	criarFila(&umaFila, capa);
-
-	// apresenta menu
-	while( 1 ){
-
-		printf("\n1 - Inserir elemento\n2 - Remover elemento\n3 - Mostrar Fila\n0 - Sair\n\nOpcao? ");
-		scanf("%d", &opcao);
-
-		switch(opcao){
-
-			case 0: exit(0);
-
-			case 1: // insere elemento
-				if (estaCheia(&umaFila)){
-
-					printf("\nFila Cheia!!!\n\n");
-
-				}
-				else {
-
-					printf("\nValor do elemento a ser inserido? ");
-					scanf("%f", &valor);
-					inserir(&umaFila,valor);
-
-				}
-
-				break;
-
-			case 2: // remove elemento
-				if (estaVazia(&umaFila)){
-
-					printf("\nFila vazia!!!\n\n");
-
-				}
-				else {
-
-					valor = remover(&umaFila);
-					printf("\n%1f removido com sucesso\n\n", valor) ; 
-
-				}
-				break;
-
-				case 3: // mostrar fila
-					if (estaVazia(&umaFila)){
-
-						printf("\nFila vazia!!!\n\n");
-
-					}
-					else {
-
-						printf("\nConteudo da fila => ");
-						mostrarFila(&umaFila);
-
-					}
-					break;
-
-				default:
-					printf("\nOpcao Invalida\n\n");
-		}
-	}
 }
