@@ -88,6 +88,10 @@ void enfileirar(struct fila *f, int num){
         
     //f->ultimo++;
     f->ultimo = (f->ultimo + 1) % f->capacidade;
+	/* ou
+	if(f->ultimo == f->capacidade-1)
+		f->ultimo = -1;
+	*/
 
     f->dados[f->ultimo] = num;
 
@@ -107,6 +111,10 @@ void desenfileirar(struct fila *f){
     f->dados[f->primeiro] = 0;
     //f->primeiro++;
     f->primeiro = (f->primeiro + 1) % f->capacidade;
+	/* ou
+		if(f->primeiro == f->capacidade)
+		f->primeiro = 0;
+	*/
 
     f->nItens--;
 
