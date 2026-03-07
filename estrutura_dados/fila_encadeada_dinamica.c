@@ -55,7 +55,7 @@ void enfileirar(fila* f, char* nome){
         f->ultimo   = novo_elemento;
     } else {                //ja tem
         f->ultimo->proximo = novo_elemento;
-        f->ultimo = novo_elemento; // e o proximo é definido qnd???, NAO ENTENDI
+        f->ultimo = novo_elemento; 
     }
 
     printf("%s entrou na fila.\n", nome);
@@ -71,7 +71,7 @@ void desenfileirar(fila* f){
     printf("%s foi atendido(a).\n", temp->pessoa);
     f->primeiro = f->primeiro->proximo; 
 
-    if(f->primeiro == NULL) { // Nao entendi essa parte, como o primeiro vai ficar NULL?
+    if(f->primeiro == NULL) { 
         f->ultimo = NULL;
     }
 
